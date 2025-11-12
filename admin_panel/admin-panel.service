@@ -1,0 +1,23 @@
+[Unit]
+Description=Admin Panel Spring Boot Application
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/admin-panel
+ExecStart=/usr/bin/java -jar -Dspring.profiles.active=prod /opt/admin-panel/admin_panel-0.0.1-SNAPSHOT.jar
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=admin-panel
+
+# Environment variables
+Environment="DB_USERNAME=postgres"
+Environment="DB_PASSWORD=your_secure_password"
+Environment="JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_min_256_bits"
+
+[Install]
+WantedBy=multi-user.target
+
