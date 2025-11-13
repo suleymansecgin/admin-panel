@@ -1,16 +1,17 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import authService from '../services/authService'
 import './RegisterForm.css'
 
-const RegisterForm = ({ onSwitchToLogin }) => {
+const RegisterForm = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login, isAuthenticated } = useAuth()
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -47,27 +48,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       // Kayıt başarılı olduktan sonra otomatik giriş yap
       await login(username, password)
       
-      // Başarılı kayıt ve giriş sonrası giriş formuna geç
-      setTimeout(() => {
-        onSwitchToLogin()
-      }, 1000)
+      // PublicRoute otomatik olarak dashboard'a yönlendirecek
     } catch (err) {
       setError(err.message || 'Kayıt başarısız. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }
-  }
-
-  if (isAuthenticated) {
-    return (
-      <div className="register-container">
-        <div className="register-card success">
-          <h2>Kayıt Başarılı!</h2>
-          <p>Hoş geldiniz, {username}!</p>
-          <p className="success-message">Giriş yapılıyor...</p>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -140,9 +126,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           <div className="switch-form">
             <p>
               Zaten hesabınız var mı?{' '}
-              <button type="button" onClick={onSwitchToLogin} className="link-button">
+              <Link to="/login" className="link-button">
                 Giriş yap
-              </button>
+              </Link>
             </p>
           </div>
         </form>

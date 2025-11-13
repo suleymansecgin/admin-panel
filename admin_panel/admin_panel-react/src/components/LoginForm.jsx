@@ -1,13 +1,14 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './LoginForm.css'
 
-const LoginForm = ({ onSwitchToRegister }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login, isAuthenticated } = useAuth()
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -22,24 +23,12 @@ const LoginForm = ({ onSwitchToRegister }) => {
 
     try {
       await login(username, password)
-      // Başarılı giriş sonrası yönlendirme burada yapılabilir
-      console.log('Giriş başarılı!')
+      // PublicRoute otomatik olarak dashboard'a yönlendirecek
     } catch (err) {
       setError(err.message || 'Giriş başarısız. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }
-  }
-
-  if (isAuthenticated) {
-    return (
-      <div className="login-container">
-        <div className="login-card success">
-          <h2>Giriş Başarılı!</h2>
-          <p>Hoş geldiniz, {username}!</p>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -86,9 +75,9 @@ const LoginForm = ({ onSwitchToRegister }) => {
           <div className="switch-form">
             <p>
               Hesabınız yok mu?{' '}
-              <button type="button" onClick={onSwitchToRegister} className="link-button">
+              <Link to="/register" className="link-button">
                 Kaydol
-              </button>
+              </Link>
             </p>
           </div>
         </form>
