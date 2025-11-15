@@ -36,6 +36,11 @@ echo -e "${GREEN}✅ Build dosyaları başarıyla kopyalandı${NC}"
 
 cd ..
 
+# Maven wrapper'a execute permission ver
+if [ -f "./mvnw" ]; then
+    chmod +x ./mvnw
+fi
+
 # Spring Boot JAR dosyası oluştur
 echo -e "${YELLOW}🔨 Spring Boot JAR dosyası oluşturuluyor...${NC}"
 ./mvnw clean package -DskipTests
