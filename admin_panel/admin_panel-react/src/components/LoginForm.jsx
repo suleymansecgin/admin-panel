@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './LoginForm.css'
 
@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -23,10 +24,10 @@ const LoginForm = () => {
 
     try {
       await login(username, password)
-      // PublicRoute otomatik olarak dashboard'a yönlendirecek
+      // Dashboard'a yönlendir
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.message || 'Giriş başarısız. Lütfen tekrar deneyin.')
-    } finally {
       setLoading(false)
     }
   }
