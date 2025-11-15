@@ -26,8 +26,13 @@ npm run build
 
 # Build çıktısını Spring Boot static klasörüne kopyala
 echo -e "${YELLOW}📁 Build dosyaları kopyalanıyor...${NC}"
+# Static klasörünü oluştur (yoksa)
+mkdir -p ../src/main/resources/static
+# Eski dosyaları temizle
 rm -rf ../src/main/resources/static/*
+# Yeni build dosyalarını kopyala
 cp -r dist/* ../src/main/resources/static/
+echo -e "${GREEN}✅ Build dosyaları başarıyla kopyalandı${NC}"
 
 cd ..
 
