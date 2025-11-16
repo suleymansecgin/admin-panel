@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import productService from '../services/productService'
 
 const ProductManagement = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,12 +20,15 @@ const ProductManagement = () => {
   })
   const [error, setError] = useState('')
 
+  const isAdminPanel = location.pathname.startsWith('/admin_panel')
+  const basePath = isAdminPanel ? '/admin_panel' : ''
+
   const menuItems = [
-    { id: 1, name: 'Dashboard', icon: '📊', path: '/dashboard' },
-    { id: 2, name: 'Ürün Yönetimi', icon: '📦', path: '/products', active: true },
-    { id: 3, name: 'Ayarlar', icon: '⚙️', path: '/settings' },
-    { id: 4, name: 'Raporlar', icon: '📈', path: '/reports' },
-    { id: 5, name: 'İstatistikler', icon: '📉', path: '/statistics' },
+    { id: 1, name: 'Dashboard', icon: '📊', path: `${basePath}/dashboard` },
+    { id: 2, name: 'Ürün Yönetimi', icon: '📦', path: `${basePath}/products`, active: true },
+    { id: 3, name: 'Ayarlar', icon: '⚙️', path: `${basePath}/settings` },
+    { id: 4, name: 'Raporlar', icon: '📈', path: `${basePath}/reports` },
+    { id: 5, name: 'İstatistikler', icon: '📉', path: `${basePath}/statistics` },
   ]
 
   useEffect(() => {

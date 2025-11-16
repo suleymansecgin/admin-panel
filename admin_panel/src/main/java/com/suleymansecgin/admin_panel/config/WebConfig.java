@@ -39,6 +39,7 @@ public class WebConfig implements WebMvcConfigurer {
         // API route'larını hariç tutarak frontend route'larını index.html'e yönlendir
         // Sadece GET istekleri için çalışır, API route'ları etkilenmez
         registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/admin_panel").setViewName("forward:/index.html");
         registry.addViewController("/login").setViewName("forward:/index.html");
         registry.addViewController("/register").setViewName("forward:/index.html");
         registry.addViewController("/dashboard").setViewName("forward:/index.html");

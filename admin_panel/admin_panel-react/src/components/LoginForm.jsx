@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './LoginForm.css'
 
@@ -10,6 +10,11 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  
+  const isAdminPanel = location.pathname.startsWith('/admin_panel')
+  const dashboardPath = isAdminPanel ? '/admin_panel/dashboard' : '/dashboard'
+  const registerPath = isAdminPanel ? '/admin_panel/register' : '/register'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,7 +30,7 @@ const LoginForm = () => {
     try {
       await login(username, password)
       // Dashboard'a yönlendir
-      navigate('/dashboard', { replace: true })
+      navigate(dashboardPath, { replace: true })
     } catch (err) {
       setError(err.message || 'Giriş başarısız. Lütfen tekrar deneyin.')
       setLoading(false)
@@ -76,7 +81,7 @@ const LoginForm = () => {
           <div className="switch-form">
             <p>
               Hesabınız yok mu?{' '}
-              <Link to="/register" className="link-button">
+              <Link to={registerPath} className="link-button">
                 Kaydol
               </Link>
             </p>

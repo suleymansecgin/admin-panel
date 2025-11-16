@@ -1,18 +1,22 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const Dashboard = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
+  const isAdminPanel = location.pathname.startsWith('/admin_panel')
+  const basePath = isAdminPanel ? '/admin_panel' : ''
+
   const menuItems = [
-    { id: 1, name: 'Dashboard', icon: '📊', path: '/dashboard', active: true },
-    { id: 2, name: 'Ürün Yönetimi', icon: '📦', path: '/products' },
-    { id: 3, name: 'Ayarlar', icon: '⚙️', path: '/settings' },
-    { id: 4, name: 'Raporlar', icon: '📈', path: '/reports' },
-    { id: 5, name: 'İstatistikler', icon: '📉', path: '/statistics' },
+    { id: 1, name: 'Dashboard', icon: '📊', path: `${basePath}/dashboard`, active: true },
+    { id: 2, name: 'Ürün Yönetimi', icon: '📦', path: `${basePath}/products` },
+    { id: 3, name: 'Ayarlar', icon: '⚙️', path: `${basePath}/settings` },
+    { id: 4, name: 'Raporlar', icon: '📈', path: `${basePath}/reports` },
+    { id: 5, name: 'İstatistikler', icon: '📉', path: `${basePath}/statistics` },
   ]
 
   const handleMenuClick = (path) => {
