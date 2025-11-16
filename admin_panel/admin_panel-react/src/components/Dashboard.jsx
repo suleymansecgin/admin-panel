@@ -1,17 +1,25 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const Dashboard = () => {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   const menuItems = [
-    { id: 1, name: 'Dashboard', icon: '📊', active: true },
-    { id: 2, name: 'Kullanıcılar', icon: '👥' },
-    { id: 3, name: 'Ayarlar', icon: '⚙️' },
-    { id: 4, name: 'Raporlar', icon: '📈' },
-    { id: 5, name: 'İstatistikler', icon: '📉' },
+    { id: 1, name: 'Dashboard', icon: '📊', path: '/dashboard', active: true },
+    { id: 2, name: 'Ürün Yönetimi', icon: '📦', path: '/products' },
+    { id: 3, name: 'Ayarlar', icon: '⚙️', path: '/settings' },
+    { id: 4, name: 'Raporlar', icon: '📈', path: '/reports' },
+    { id: 5, name: 'İstatistikler', icon: '📉', path: '/statistics' },
   ]
+
+  const handleMenuClick = (path) => {
+    if (path) {
+      navigate(path)
+    }
+  }
 
   const getColorClasses = (color) => {
     const colors = {
@@ -86,6 +94,7 @@ const Dashboard = () => {
           {menuItems.map((item) => (
             <button
               key={item.id}
+              onClick={() => handleMenuClick(item.path)}
               className={`w-100 d-flex align-items-center ${
                 sidebarOpen ? 'justify-content-start px-3' : 'justify-content-center'
               } py-2 mb-2 rounded border-0 ${

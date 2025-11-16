@@ -14,7 +14,8 @@ public enum MessageType {
     UNAUTHORIZED("1004", "Yetkisiz erişim"),
     INVALID_TOKEN("1005", "Geçersiz token"),
     TOKEN_EXPIRED("1006", "Token süresi dolmuş"),
-    EMAIL_ALREADY_EXISTS("1007", "E-posta adresi zaten kullanılıyor");
+    EMAIL_ALREADY_EXISTS("1007", "E-posta adresi zaten kullanılıyor"),
+    PRODUCT_NOT_FOUND("2001", "Ürün bulunamadı");
 
     private String code;
 
