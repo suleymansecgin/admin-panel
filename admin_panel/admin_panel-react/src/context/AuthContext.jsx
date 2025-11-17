@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import authService from '../services/authService'
+import { createContext, useState, useContext, useEffect } from 'react'
+import { authService } from '../services/authService'
 
 const AuthContext = createContext(null)
 
@@ -13,53 +13,123 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Sayfa yüklendiğinde localStorage'dan token'ı kontrol et
-    const storedToken = localStorage.getItem('token')
     const storedUser = localStorage.getItem('user')
-
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (e) {
+        localStorage.removeItem('user')
+      }
     }
     setLoading(false)
   }, [])
 
-  const login = async (username, password) => {
+  const login = async (username, password, mfaCode = null) => {
     try {
-      const response = await authService.login(username, password)
-      const { token: newToken, username: userUsername, email, role } = response
+      const response = await authService.login(username, password, mfaCode)
+      
+      if (response.mfaRequired) {
+        return { mfaRequired: true }
+      }
 
-      setToken(newToken)
-      const userData = { username: userUsername, email, role }
-      setUser(userData)
-
-      // Token ve kullanıcı bilgilerini localStorage'a kaydet
-      localStorage.setItem('token', newToken)
-      localStorage.setItem('user', JSON.stringify(userData))
-
-      return response
+      if (response.accessToken) {
+        localStorage.setItem('accessToken', response.accessToken)
+        localStorage.setItem('refreshToken', response.refreshToken)
+        localStorage.setItem('user', JSON.stringify(response.user))
+        setUser(response.user)
+        return { success: true }
+      }
     } catch (error) {
-      throw error
+      console.error('Login error:', error.response?.data)
+      
+      // Validation hataları için özel işleme
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors
+        const errorMessages = Object.values(errors).join(', ')
+        return {
+          success: false,
+          error: errorMessages || 'Giriş başarısız',
+        }
+      }
+      
+      // Diğer hatalar için
+      const errorMessage = 
+        error.response?.data?.message?.ofStatic || 
+        error.response?.data?.message?.messageType?.message ||
+        error.response?.data?.message ||
+        error.message ||
+        'Giriş başarısız'
+      
+      return {
+        success: false,
+        error: errorMessage,
+      }
     }
   }
 
-  const logout = () => {
-    setToken(null)
+  const register = async (userData) => {
+    try {
+      const response = await authService.register(userData)
+      // İlk kullanıcı ise token var, diğerleri için token yok (onay bekliyor)
+      if (response.accessToken) {
+        localStorage.setItem('accessToken', response.accessToken)
+        localStorage.setItem('refreshToken', response.refreshToken)
+        localStorage.setItem('user', JSON.stringify(response.user))
+        setUser(response.user)
+        return { success: true, user: response.user }
+      } else if (response.user) {
+        // Onay bekleyen kullanıcı için sadece user bilgisini döndür
+        return { success: true, user: response.user }
+      }
+      return { success: false, error: 'Kayıt başarısız' }
+    } catch (error) {
+      console.error('Register error:', error.response?.data)
+      
+      // Validation hataları için özel işleme
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors
+        const errorMessages = Object.values(errors).join(', ')
+        return {
+          success: false,
+          error: errorMessages || 'Kayıt başarısız',
+        }
+      }
+      
+      // Diğer hatalar için
+      const errorMessage = 
+        error.response?.data?.message?.ofStatic || 
+        error.response?.data?.message?.messageType?.message ||
+        error.response?.data?.message ||
+        error.message ||
+        'Kayıt başarısız'
+      
+      return {
+        success: false,
+        error: errorMessage,
+      }
+    }
+  }
+
+  const logout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken')
+    if (refreshToken) {
+      try {
+        await authService.logout(refreshToken)
+      } catch (error) {
+        console.error('Logout error:', error)
+      }
+    }
     setUser(null)
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
   }
 
   const value = {
     user,
-    token,
     login,
+    register,
     logout,
-    isAuthenticated: !!token,
     loading,
   }
 

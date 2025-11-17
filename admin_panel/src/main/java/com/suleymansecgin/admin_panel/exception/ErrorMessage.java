@@ -7,21 +7,21 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ErrorMessage {
-    
-    private MessageType messageType;
 
-    private String ofStatic;
+	private MessageType messageType;
 
-    public String prepareErrorMessage(){
-        StringBuilder builder = new StringBuilder();
-        builder.append(messageType.getMessage());
-        if(this.ofStatic != null){
-            builder.append(" : "+ofStatic);
-        }
-
-        return builder.toString();
-    }
+	private String ofStatic;
+	
+	public String prepareErrorMessage() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(messageType.getMessage());
+		if (this.ofStatic != null) {
+			builder.append(" : "+ofStatic);
+		}
+		
+		return builder.toString();
+	}
 }

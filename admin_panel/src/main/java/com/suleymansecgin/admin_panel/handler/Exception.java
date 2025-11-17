@@ -12,12 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exception<E> {
-    
-    private String path;
 
-    private LocalDateTime createTime;
-
-    private String hostName;
-
-    private E message;
+	private String path;
+	
+	private LocalDateTime createTime;
+	
+	private String hostName;
+	
+	private E message;
 }

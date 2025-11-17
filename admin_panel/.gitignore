@@ -31,13 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Production Configuration ###
-src/main/resources/application-prod.properties
-*.env
-.env.local
-.env.production
-
-### Node modules ###
-admin_panel-react/node_modules/
-admin_panel-react/dist/
