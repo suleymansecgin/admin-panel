@@ -75,11 +75,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of(
-				"http://localhost:3000",
-				"http://localhost:5173",
-				"https://www.suleymansecgin.com.tr",
-				"https://suleymansecgin.com.tr")); // Frontend portları ve production domain
+		configuration.setAllowedOriginPatterns(List.of("*"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setExposedHeaders(List.of("Authorization"));
@@ -91,8 +87,4 @@ public class SecurityConfig {
 		return source;
 	}
 
-	@Bean
-	public org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers("/api/auth/**");
-	}
 }
